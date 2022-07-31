@@ -1,17 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"os"
 
 	qrc721 "qanx.space/qanx-contracts/go/QRC721"
+	callintrpr "qanx.space/qanx-contracts/go/utils/CallInterpreter"
 )
 
 func main() {
-	token := qrc721.QRC721{
-		name:    "Example Token",
-		symbol:  "EXPL",
-		baseUri: "https://example.com/",
-	}
+	token := qrc721.NewQRC721("Example", "XMPL", "https://example.com/")
 
-	fmt.Println(token)
+	callintrpr.Interpret(token, os.Args[1:])
 }
