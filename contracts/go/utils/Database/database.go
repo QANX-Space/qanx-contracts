@@ -16,5 +16,12 @@ func Prune(key string) {
 }
 
 func Read(key string) string {
-	return os.Getenv(fmt.Sprintf("DB_%v", key))
+	value := os.Getenv(fmt.Sprintf("DB_%v", key))
+
+	if len(value) == 0 {
+		os.Stderr.WriteString(fmt.Sprintf("Database: Can't find key \"DB_%v\" in env\n", key))
+		os.Exit(1)
+	}
+
+	return value
 }
