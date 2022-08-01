@@ -71,8 +71,8 @@ func (token *QRC721) Symbol() string {
 
 // Retrieve the balance of owner
 func (token *QRC721) BalanceOf(owner string) uint64 {
-	n, _ := strconv.Atoi(db.Read(fmt.Sprintf("BALANCE_OF_%v", owner)))
-	return uint64(n)
+	n, _ := strconv.ParseUint(db.Read(fmt.Sprintf("BALANCE_OF_%v", owner)), 10, 64)
+	return n
 }
 
 // Retrieve the owner of token id
