@@ -20,12 +20,20 @@ func Interpret(contract interface{}, args []string) {
 	}
 
 	methodType := method.Type()
-
 	inputs := getMethodInputs(methodType, methodArguments)
 
-	if methodType.NumOut() > 0 {
-		fmt.Printf("OUT=%v\n", method.Call(inputs))
-	} else {
+	if methodType.NumOut() > 1 { // Multiple return values
+		response := method.Call(inputs)
+		output := make([]string, len(response))
+
+		for i := 0; i < len(output); i++ {
+			output[i] = fmt.Sprintf("%v", response[i])
+		}
+
+		fmt.Printf("OUT=%v\n", output)
+	} else if methodType.NumOut() > 0 { // Single return value
+		fmt.Printf("OUT=%v\n", method.Call(inputs)[0])
+	} else { // No return value
 		method.Call(inputs)
 	}
 
