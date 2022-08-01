@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// Takes in a smart contract and calls it functions based on the arguments given
 func Interpret(contract interface{}, args []string) {
 	methodName := args[0]
 	methodArguments := args[1:]
@@ -20,10 +21,23 @@ func Interpret(contract interface{}, args []string) {
 
 	methodType := method.Type()
 
-	in := make([]reflect.Value, methodType.NumIn())
+	inputs := getMethodInputs(methodType, methodArguments)
 
-	if len(in) != len(methodArguments) {
-		os.Stdout.WriteString(fmt.Sprintf("CallInterpreter: Expected %v arguments received %v\n", len(in), len(methodArguments)))
+	if methodType.NumOut() > 0 {
+		fmt.Printf("OUT=%v\n", method.Call(inputs))
+	} else {
+		method.Call(inputs)
+	}
+
+	os.Exit(0)
+}
+
+// Turns string arguments in to typed arguments
+func getMethodInputs(methodType reflect.Type, methodArguments []string) []reflect.Value {
+	inputs := make([]reflect.Value, methodType.NumIn())
+
+	if len(inputs) != len(methodArguments) {
+		os.Stdout.WriteString(fmt.Sprintf("CallInterpreter: Expected %v arguments received %v\n", len(inputs), len(methodArguments)))
 		os.Exit(1)
 	}
 
@@ -34,7 +48,7 @@ func Interpret(contract interface{}, args []string) {
 		switch t.Kind() {
 		default:
 		case reflect.String:
-			in[i] = reflect.ValueOf(arg)
+			inputs[i] = reflect.ValueOf(arg)
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			n, err := strconv.ParseInt(arg, 10, 64)
 
@@ -43,7 +57,7 @@ func Interpret(contract interface{}, args []string) {
 				os.Exit(1)
 			}
 
-			in[i] = reflect.ValueOf(n).Convert(t)
+			inputs[i] = reflect.ValueOf(n).Convert(t)
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			n, err := strconv.ParseUint(arg, 10, 64)
 
@@ -52,7 +66,7 @@ func Interpret(contract interface{}, args []string) {
 				os.Exit(1)
 			}
 
-			in[i] = reflect.ValueOf(n).Convert(t)
+			inputs[i] = reflect.ValueOf(n).Convert(t)
 		case reflect.Bool:
 			b, err := strconv.ParseBool(arg)
 
@@ -61,15 +75,9 @@ func Interpret(contract interface{}, args []string) {
 				os.Exit(1)
 			}
 
-			in[i] = reflect.ValueOf(b).Convert(t)
+			inputs[i] = reflect.ValueOf(b).Convert(t)
 		}
 	}
 
-	if methodType.NumOut() > 0 {
-		fmt.Printf("OUT=%v\n", method.Call(in))
-		os.Exit(0)
-	}
-
-	method.Call(in)
-	os.Exit(0)
+	return inputs
 }
