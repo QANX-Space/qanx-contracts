@@ -1,5 +1,8 @@
 # QANX Space | Contracts
 
+> At the moment there's no confirmed way to retrieve the transaction sender's wallet address.
+> Once there's a confirmed way [Context](contracts/go/utils/Context) will be updated.
+
 **A library for smart contract creation on the QANX blockchain.** 
  - Community-vetted code.
  - QRC20 and QRC721 contracts written in multiple languages.
