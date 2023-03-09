@@ -9,13 +9,18 @@ import (
 
 // Takes in a smart contract and calls its functions based on the arguments given
 func Interpret(contract interface{}, args []string) {
+	if len(args) == 0 {
+		os.Stderr.WriteString("CallInterpreter: Method name was not provided\n")
+		os.Exit(1)
+	}
+
 	methodName := args[0]
 	methodArguments := args[1:]
 
 	method := reflect.ValueOf(contract).MethodByName(methodName)
 
 	if !method.IsValid() {
-		os.Stdout.WriteString(fmt.Sprintf("CallInterpreter: Method \"%v\" does not exist\n", methodName))
+		os.Stderr.WriteString(fmt.Sprintf("CallInterpreter: Method \"%v\" does not exist\n", methodName))
 		os.Exit(1)
 	}
 
@@ -45,7 +50,7 @@ func getMethodInputs(methodType reflect.Type, methodArguments []string) []reflec
 	inputs := make([]reflect.Value, methodType.NumIn())
 
 	if len(inputs) != len(methodArguments) {
-		os.Stdout.WriteString(fmt.Sprintf("CallInterpreter: Expected %v arguments received %v\n", len(inputs), len(methodArguments)))
+		os.Stderr.WriteString(fmt.Sprintf("CallInterpreter: Expected %v arguments received %v\n", len(inputs), len(methodArguments)))
 		os.Exit(1)
 	}
 
