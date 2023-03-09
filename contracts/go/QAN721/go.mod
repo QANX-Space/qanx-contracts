@@ -1,4 +1,4 @@
-module qanx.space/qanx-contracts/go/QRC721
+module qanx.space/qanx-contracts/go/QAN721
 
 go 1.18
 

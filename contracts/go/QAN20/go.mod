@@ -1,4 +1,4 @@
-module qanx.space/qanx-contracts/go/QRC20
+module qanx.space/qanx-contracts/go/QAN20
 
 go 1.18
 
