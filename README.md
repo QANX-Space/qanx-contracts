@@ -12,7 +12,7 @@
 ### Supported languages
 
 - [x] [Go](contracts/go)
-- [ ] JavaScript
+- [x] [JavaScript](contracts/js)
 - [ ] Python
 - [ ] Java
 - [ ] C#
