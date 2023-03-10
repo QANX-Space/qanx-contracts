@@ -129,7 +129,7 @@ func (token *QAN721) IsApprovedOrOwner(spender string, tokenId uint64) bool {
 func (token *QAN721) TransferFrom(from string, to string, tokenId uint64) {
 	sender := context.Sender()
 
-	if token.IsApprovedOrOwner(sender, tokenId) {
+	if !token.IsApprovedOrOwner(sender, tokenId) {
 		os.Stderr.WriteString(fmt.Sprintf("QAN721: %v is not the token owner or approved\n", sender))
 		os.Exit(1)
 	}
