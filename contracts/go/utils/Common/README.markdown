@@ -5,7 +5,7 @@ import "."
 
 ## Usage
 
-#### func Sender
+#### func ParseBig256
 
 ```go
 func ParseBig256(s string) (*big.Int, bool)
