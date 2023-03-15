@@ -1,4 +1,4 @@
-const context = require("../utils/Context/context");
+const message = require("../utils/Message/message");
 const db = require("../utils/Database/database");
 
 module.exports = class QAN20 {
@@ -46,7 +46,7 @@ module.exports = class QAN20 {
   transfer(to, amount) {
     to = to.toLowerCase();
 
-    const sender = context.sender();
+    const sender = message.sender();
 
     return transfer(sender, to, amount).bind(this);
   }
@@ -64,7 +64,7 @@ module.exports = class QAN20 {
   approve(spender, amount) {
     spender = spender.toLowerCase();
 
-    const sender = context.sender();
+    const sender = message.sender();
     db.write(`TOKEN_ALLOWANCE_${sender}_${spender}`, amount);
     return true;
   }
@@ -74,7 +74,7 @@ module.exports = class QAN20 {
     from = from.toLowerCase();
     to = to.toLowerCase();
 
-    const sender = context.sender();
+    const sender = message.sender();
     const allowance = this.allowance(from, sender);
 
     if (allowance < amount) {

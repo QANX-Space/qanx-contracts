@@ -1,4 +1,4 @@
-const context = require("../utils/Context/context");
+const message = require("../utils/Message/message");
 const db = require("../utils/Database/database");
 
 module.exports = class QAN721 {
@@ -43,7 +43,7 @@ module.exports = class QAN721 {
   approve(to, tokenId) {
     to = to.toLowerCase();
 
-    const sender = context.sender();
+    const sender = message.sender();
     const owner = this.ownerOf(tokenId);
 
     if (to === owner) {
@@ -70,7 +70,7 @@ module.exports = class QAN721 {
   setApprovalForAll(operator, approved) {
     operator = operator.toLowerCase();
 
-    db.write(`OPERATOR_APPROVAL_${context.sender()}_${operator}`, approved);
+    db.write(`OPERATOR_APPROVAL_${message.sender()}_${operator}`, approved);
   }
 
   // Returns if the operator is allowed to manage all of the assets of owner
@@ -100,7 +100,7 @@ module.exports = class QAN721 {
     from = from.toLowerCase();
     to = to.toLowerCase();
 
-    const sender = context.sender();
+    const sender = message.sender();
 
     if (!this.isApprovedOrOwner(sender, tokenId)) {
       process.stdout.write(
