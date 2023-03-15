@@ -154,8 +154,8 @@ func (token *QAN721) TransferFrom(from string, to string, tokenId *big.Int) {
 	fb := token.BalanceOf(from)
 	tb := token.BalanceOf(to)
 
-	db.Write(fmt.Sprintf("BALANCE_OF_%v", from), fb.Sub(fb, amount).String())
-	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).String())
+	db.Write(fmt.Sprintf("BALANCE_OF_%v", from), fb.Sub(fb, amount).Text(16))
+	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).Text(16))
 
 	db.Prune(fmt.Sprintf("TOKEN_APPROVAL_%v", tokenId.String()))
 	db.Write(fmt.Sprintf("OWNER_OF_%v", tokenId.String()), to)
@@ -174,6 +174,6 @@ func (token *QAN721) Mint(to string, tokenId *big.Int) {
 
 	tb := token.BalanceOf(to)
 
-	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).String())
+	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).Text(16))
 	db.Write(fmt.Sprintf("OWNER_OF_%v", tokenId.String()), to)
 }

@@ -111,7 +111,7 @@ func (token *QAN20) Approve(spender string, amount *big.Int) bool {
 	spender = strings.ToLower(spender)
 	sender := message.Sender()
 
-	db.Write(fmt.Sprintf("TOKEN_ALLOWANCE_%v_%v", sender, spender), amount.String())
+	db.Write(fmt.Sprintf("TOKEN_ALLOWANCE_%v_%v", sender, spender), amount.Text(16))
 	return true
 }
 
@@ -128,7 +128,7 @@ func (token *QAN20) TransferFrom(from string, to string, amount *big.Int) bool {
 		os.Exit(1)
 	}
 
-	db.Write(fmt.Sprintf("TOKEN_ALLOWANCE_%v_%v", from, sender), allowance.Sub(allowance, amount).String())
+	db.Write(fmt.Sprintf("TOKEN_ALLOWANCE_%v_%v", from, sender), allowance.Sub(allowance, amount).Text(16))
 
 	return token.transfer(from, to, amount)
 }
@@ -140,8 +140,8 @@ func (token *QAN20) Mint(to string, amount *big.Int) {
 	tb := token.BalanceOf(to)
 	ts := token.TotalSupply()
 
-	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).String())
-	db.Write("TOTAL_SUPPLY", ts.Add(ts, amount).String())
+	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).Text(16))
+	db.Write("TOTAL_SUPPLY", ts.Add(ts, amount).Text(16))
 }
 
 func (token *QAN20) transfer(from string, to string, amount *big.Int) bool {
@@ -157,8 +157,8 @@ func (token *QAN20) transfer(from string, to string, amount *big.Int) bool {
 
 	tb := token.BalanceOf(to)
 
-	db.Write(fmt.Sprintf("BALANCE_OF_%v", from), fb.Sub(fb, amount).String())
-	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).String())
+	db.Write(fmt.Sprintf("BALANCE_OF_%v", from), fb.Sub(fb, amount).Text(16))
+	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), tb.Add(tb, amount).Text(16))
 
 	return true
 }
