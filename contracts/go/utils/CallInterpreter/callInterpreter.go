@@ -2,9 +2,12 @@ package callintrpr
 
 import (
 	"fmt"
+	"math/big"
 	"os"
 	"reflect"
 	"strconv"
+
+	common "qanx.space/qanx-contracts/go/utils/Common"
 )
 
 // Takes in a smart contract and calls its functions based on the arguments given
@@ -61,7 +64,22 @@ func getMethodInputs(methodType reflect.Type, methodArguments []string) []reflec
 		switch t.Kind() {
 		default:
 		case reflect.String:
+			fmt.Println(t.Name())
+
 			inputs[i] = reflect.ValueOf(arg)
+
+		case reflect.Ptr:
+			if t.Elem() == reflect.TypeOf(big.Int{}) {
+				n, ok := common.ParseBig256(arg)
+
+				if ok {
+					inputs[i] = reflect.ValueOf(n)
+					continue
+				}
+			}
+
+			inputs[i] = reflect.ValueOf(arg)
+
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 			n, err := strconv.ParseInt(arg, 10, 64)
 
@@ -71,6 +89,7 @@ func getMethodInputs(methodType reflect.Type, methodArguments []string) []reflec
 			}
 
 			inputs[i] = reflect.ValueOf(n).Convert(t)
+
 		case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			n, err := strconv.ParseUint(arg, 10, 64)
 
@@ -80,6 +99,7 @@ func getMethodInputs(methodType reflect.Type, methodArguments []string) []reflec
 			}
 
 			inputs[i] = reflect.ValueOf(n).Convert(t)
+
 		case reflect.Bool:
 			b, err := strconv.ParseBool(arg)
 

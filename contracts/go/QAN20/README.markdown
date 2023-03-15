@@ -10,19 +10,18 @@ import "."
 package main
 
 import (
+	"math/big"
+	"os"
 
-    "os"
-
-    qan20 "qanx.space/qanx-contracts/go/QAN20"
-    callintrpr "qanx.space/qanx-contracts/go/utils/CallInterpreter"
-
+	qan20 "qanx.space/qanx-contracts/go/QAN20"
+	callintrpr "qanx.space/qanx-contracts/go/utils/CallInterpreter"
 )
 
 func main() {
-QAN
-    token := qan20.NewQAN20("Example", "XMPL", 8)
 
-    callintrpr.Interpret(token, os.Args[1:])
+	token := qan20.NewQAN20("Example", "XMPL", big.NewInt(18))
+
+	callintrpr.Interpret(token, os.Args[1:])
 
 }
 

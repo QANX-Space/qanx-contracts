@@ -42,7 +42,7 @@ type QAN20Token interface {
 	Allowance(owner string, spender string) *big.Int
 	Approve(to string, amount *big.Int) bool
 	TransferFrom(from string, to string, amount *big.Int) bool
-	Mint(to string, tokenId *big.Int)
+	Mint(to string, amount *big.Int)
 }
 
 // QAN20 smart contract standard
