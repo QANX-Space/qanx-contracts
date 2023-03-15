@@ -1,14 +1,22 @@
-# message
+# tx
 
 --
 import "."
 
 ## Usage
 
-#### func Sender
+#### func GasPrice
 
 ```go
-func Sender() string
+func GasPrice() *big.Int
 ```
 
-Retrieves the sender of the transaction
+Retrieves the gas price of the transaction
+
+#### func Origin
+
+```go
+func Origin() string
+```
+
+Retrieves the origin address of the transaction
