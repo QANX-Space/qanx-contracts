@@ -2,7 +2,7 @@ const crypto = require("crypto");
 
 const keyMap = new Map();
 
-function sha256(key) {
+function formatSha256(key) {
   if (keyMap.has(key)) {
     return keyMap.get(key);
   }
@@ -15,7 +15,7 @@ function sha256(key) {
 }
 
 module.exports.write = function write(key, value) {
-  const hashedKey = sha256(key);
+  const hashedKey = formatSha256(key);
 
   process.env[`DB_${hashedKey}`] = value;
 
@@ -29,19 +29,21 @@ module.exports.write = function write(key, value) {
 };
 
 module.exports.prune = function prune(key) {
-  key = sha256(key); // convert to 32 byte key
+  key = formatSha256(key); // convert to 32 byte key
 
   process.stdout.write(`DBP=${key}\n`);
   process.env[`DB_${key}`] = "";
 };
 
 module.exports.read = function read(key, defaultsTo) {
-  key = sha256(key); // convert to 32 byte key
+  const sha256key = formatSha256(key); // convert to 32 byte key
 
-  const value = process.env[`DB_${key}`];
+  const value = process.env[`DB_${sha256key}`];
 
   if (!value && defaultsTo === undefined) {
-    process.stderr.write(`Database: Can't find key "DB_${key}" in env\n`);
+    process.stderr.write(
+      `Database: Can't find key "DB_${key}" as "DB_${sha256key}" in env\n`
+    );
     process.exit(1);
   }
 
