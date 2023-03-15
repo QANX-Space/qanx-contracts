@@ -1,5 +1,5 @@
 module.exports.sender = function sender() {
-  let sender = process.env.SENDER.toLowerCase();
+  let sender = process.env.MSG_SENDER.toLowerCase();
 
   if (!sender) {
     process.stderr.write("Context: Sender is not known\n");
