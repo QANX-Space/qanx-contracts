@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	context "qanx.space/qanx-contracts/go/utils/Context"
 	db "qanx.space/qanx-contracts/go/utils/Database"
@@ -81,31 +82,43 @@ func (token *QAN20) TotalSupply() uint64 {
 
 // Retrieve the balance of owner
 func (token *QAN20) BalanceOf(owner string) uint64 {
+	owner = strings.ToLower(owner)
 	n, _ := strconv.ParseUint(db.Read(fmt.Sprintf("BALANCE_OF_%v", owner)), 10, 64)
+
 	return n
 }
 
 // Transfers tokens from sender to "to"
 func (token *QAN20) Transfer(to string, amount uint64) bool {
+	to = strings.ToLower(to)
 	sender := context.Sender()
+
 	return token.transfer(sender, to, amount)
 }
 
 // Retrieve the remaining amount of tokens allowed to spend by spender
 func (token *QAN20) Allowance(owner string, spender string) uint64 {
+	owner = strings.ToLower(owner)
+	spender = strings.ToLower(spender)
+
 	n, _ := strconv.ParseUint(db.Read(fmt.Sprintf("TOKEN_ALLOWANCE_%v_%v", owner, spender)), 10, 64)
 	return n
 }
 
 // Sets amount as the allowance of spender over the caller's tokens
 func (token *QAN20) Approve(spender string, amount uint64) bool {
+	spender = strings.ToLower(spender)
 	sender := context.Sender()
+
 	db.Write(fmt.Sprintf("TOKEN_ALLOWANCE_%v_%v", sender, spender), strconv.FormatUint(amount, 10))
 	return true
 }
 
 // Transfers tokens from "from" to "to"
 func (token *QAN20) TransferFrom(from string, to string, amount uint64) bool {
+	from = strings.ToLower(from)
+	to = strings.ToLower(to)
+
 	sender := context.Sender()
 	allowance := token.Allowance(from, sender)
 
@@ -121,11 +134,16 @@ func (token *QAN20) TransferFrom(from string, to string, amount uint64) bool {
 
 // Mints the amount of tokens and transfers it to "to"
 func (token *QAN20) Mint(to string, amount uint64) {
+	to = strings.ToLower(to)
+
 	db.Write(fmt.Sprintf("BALANCE_OF_%v", to), strconv.FormatUint(token.BalanceOf(to)+amount, 10))
 	db.Write("TOTAL_SUPPLY", strconv.FormatUint(token.TotalSupply()+amount, 10))
 }
 
 func (token *QAN20) transfer(from string, to string, amount uint64) bool {
+	from = strings.ToLower(from)
+	to = strings.ToLower(to)
+
 	fromBalance := token.BalanceOf(from)
 
 	if fromBalance < amount {

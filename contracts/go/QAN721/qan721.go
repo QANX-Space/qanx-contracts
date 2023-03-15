@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	context "qanx.space/qanx-contracts/go/utils/Context"
 	db "qanx.space/qanx-contracts/go/utils/Database"
@@ -71,6 +72,8 @@ func (token *QAN721) Symbol() string {
 
 // Retrieve the balance of owner
 func (token *QAN721) BalanceOf(owner string) uint64 {
+	owner = strings.ToLower(owner)
+
 	n, _ := strconv.ParseUint(db.Read(fmt.Sprintf("BALANCE_OF_%v", owner)), 10, 64)
 	return n
 }
@@ -87,6 +90,7 @@ func (token *QAN721) TokenURI(tokenId uint64) string {
 
 // Give permission to "to" to transfer token id to another account
 func (token *QAN721) Approve(to string, tokenId uint64) {
+	to = strings.ToLower(to)
 	sender := context.Sender()
 	owner := token.OwnerOf(tokenId)
 
@@ -110,23 +114,32 @@ func (token *QAN721) GetApproved(tokenId uint64) string {
 
 // Approve or remove an operator for the caller
 func (token *QAN721) SetApprovalForAll(operator string, approved bool) {
+	operator = strings.ToLower(operator)
+
 	db.Write(fmt.Sprintf("OPERATOR_APPROVAL_%v_%v", context.Sender(), operator), strconv.FormatBool(approved))
 }
 
 // Returns if the operator is allowed to manage all of the assets of owner
 func (token *QAN721) IsApprovedForAll(owner string, operator string) bool {
+	owner = strings.ToLower(owner)
+	operator = strings.ToLower(operator)
+
 	b, _ := strconv.ParseBool(db.Read(fmt.Sprintf("OPERATOR_APPROVAL_%v_%v", owner, operator)))
 	return b
 }
 
 // Returns if the operator is allowed to manage all of the assets of owner or is the owner
 func (token *QAN721) IsApprovedOrOwner(spender string, tokenId uint64) bool {
+	spender = strings.ToLower(spender)
 	owner := token.OwnerOf(tokenId)
+
 	return spender == owner || token.IsApprovedForAll(owner, spender) || token.GetApproved(tokenId) == spender
 }
 
 // Transfers token id from "from" to "to"
 func (token *QAN721) TransferFrom(from string, to string, tokenId uint64) {
+	from = strings.ToLower(from)
+	to = strings.ToLower(to)
 	sender := context.Sender()
 
 	if !token.IsApprovedOrOwner(sender, tokenId) {
@@ -142,6 +155,8 @@ func (token *QAN721) TransferFrom(from string, to string, tokenId uint64) {
 
 // Mints the token id and transfers it to "to"
 func (token *QAN721) Mint(to string, tokenId uint64) {
+	to = strings.ToLower(to)
+
 	if len(token.OwnerOf(tokenId)) > 0 {
 		os.Stderr.WriteString(fmt.Sprintf("QAN721: Token id %v is already minted\n", tokenId))
 		os.Exit(1)
