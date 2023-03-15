@@ -32,7 +32,7 @@ Retrieves the number of the block
 block.chainId();
 ```
 
-Retrieves the chainId of the block
+Retrieves the chain id of the block
 
 #### Coinbase
 
