@@ -78,7 +78,7 @@ module.exports = class QAN20 {
     const allowance = this.allowance(from, sender);
 
     if (allowance < amount) {
-      process.stdout.write("QAN20: Insufficient allowance\n");
+      process.stderr.write("QAN20: Insufficient allowance\n");
       process.exit(1);
     }
 
@@ -98,7 +98,7 @@ function transfer(from, to, amount) {
   const fromBalance = this.balanceOf(from);
 
   if (fromBalance < amount) {
-    process.stdout.write("QAN20: Transfer amount exceeds balance\n");
+    process.stderr.write("QAN20: Transfer amount exceeds balance\n");
     process.exit(1);
   }
 
