@@ -1,13 +1,14 @@
-# context
---
-    import "."
+# message
 
+--
+import "."
 
 ## Usage
 
-#### func  Sender
+#### func Sender
 
 ```go
 func Sender() string
 ```
+
 Retrieves the sender of the transaction
